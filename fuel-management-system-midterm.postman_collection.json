@@ -1,0 +1,932 @@
+{
+  "info": {
+    "_postman_id": "d0d06b22-82a8-452c-a94e-c2bf8495b9c9",
+    "name": "Fuel Management System Mid-Term",
+    "description": "Examination requirement requests for the Fuel Management System API. Run in order after the application has started and the empty-database fixture has loaded.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "A1",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/fuel-types/all"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Fuel type JSON does not contain attendants', function () {",
+              "  const fuelTypes = pm.response.json();",
+              "  pm.expect(pm.response.code).to.eql(200);",
+              "  pm.expect(fuelTypes.length).to.be.above(0);",
+              "  pm.expect(fuelTypes[0]).to.not.have.property('attendants');",
+              "});",
+              "const types = pm.response.json();",
+              "pm.collectionVariables.set('petrolId', types.find((type) => type.name === 'Petrol').id);",
+              "pm.collectionVariables.set('dieselId', types.find((type) => type.name === 'Diesel').id);",
+              "pm.collectionVariables.set('keroseneId', types.find((type) => type.name === 'Kerosene').id);",
+              "pm.collectionVariables.set('lpgId', types.find((type) => type.name === 'LPG').id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "A2",
+      "item": [
+        {
+          "name": "A2",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/pumps/all"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const pumps = pm.response.json();",
+                  "pm.test('Pumps can be listed', function () { pm.response.to.have.status(200); pm.expect(pumps.length).to.be.at.least(4); });",
+                  "pm.collectionVariables.set('pump1Id', pumps.find((pump) => pump.pumpNumber === 1).id);",
+                  "pm.collectionVariables.set('pump3Id', pumps.find((pump) => pump.pumpNumber === 3).id);",
+                  "pm.collectionVariables.set('pump4Id', pumps.find((pump) => pump.pumpNumber === 4).id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/pump-attendants/all"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const attendants = pm.response.json();",
+                  "pm.test('Pump attendants can be listed', function () { pm.response.to.have.status(200); pm.expect(attendants.length).to.be.at.least(3); });",
+                  "pm.collectionVariables.set('attendant1Id', attendants.find((attendant) => attendant.firstName === 'Aline').id);",
+                  "pm.collectionVariables.set('attendant2Id', attendants.find((attendant) => attendant.firstName === 'Eric').id);",
+                  "pm.collectionVariables.set('attendant3Id', attendants.find((attendant) => attendant.firstName === 'Beata').id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/drivers/all"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const drivers = pm.response.json();",
+                  "pm.test('Drivers can be listed', function () { pm.response.to.have.status(200); pm.expect(drivers.length).to.be.at.least(5); });",
+                  "pm.collectionVariables.set('driverId', drivers.find((driver) => driver.licenseNumber === 'DL-2021-04567').id);",
+                  "pm.collectionVariables.set('driverLicense', 'DL-2021-04567');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/fuel-issues/all"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const issues = pm.response.json();",
+                  "pm.test('Fuel issues can be listed', function () { pm.response.to.have.status(200); pm.expect(issues.length).to.be.at.least(10); });",
+                  "pm.collectionVariables.set('requestedIssueId', issues.find((issue) => issue.status === 'REQUESTED').id);",
+                  "pm.collectionVariables.set('approvedIssueId', issues.find((issue) => issue.status === 'APPROVED').id);",
+                  "pm.collectionVariables.set('dispensedIssueId', issues.find((issue) => issue.status === 'DISPENSED').id);",
+                  "pm.collectionVariables.set('protectedIssueId', issues.find((issue) => issue.issueDate === '2026-10-22').id);",
+                  "pm.collectionVariables.set('octoberIssueId', issues.find((issue) => issue.issueDate === '2026-10-20').id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/fuel-receipts/all"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const receipts = pm.response.json();",
+                  "pm.test('Fuel receipts can be listed', function () { pm.response.to.have.status(200); pm.expect(receipts.length).to.be.at.least(1); });",
+                  "pm.collectionVariables.set('receiptId', receipts.find((receipt) => receipt.fuelIssue.id === pm.collectionVariables.get('protectedIssueId')).id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"id\":\"{{lpgId}}\",\"name\":\"LPG\"}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/fuel-types/save"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Fuel type save returns 201', function () { pm.response.to.have.status(201); pm.expect(pm.response.text()).to.eql('Fuel type saved successfully'); });"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"id\":\"{{pump4Id}}\",\"pumpNumber\":4,\"name\":\"Pump 4\"}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/pumps/save"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Pump save returns 201', function () { pm.response.to.have.status(201); pm.expect(pm.response.text()).to.eql('Pump saved successfully'); });"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"id\":\"{{attendant3Id}}\",\"firstName\":\"Beata\",\"lastName\":\"Uwase\",\"phone\":\"0788000003\",\"pump\":{\"id\":\"{{pump3Id}}\"},\"fuelTypes\":[{\"id\":\"{{petrolId}}\"},{\"id\":\"{{keroseneId}}\"}]}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/pump-attendants/save"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Pump attendant save returns 201', function () { pm.response.to.have.status(201); pm.expect(pm.response.text()).to.eql('Pump attendant saved successfully'); });"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"id\":\"{{driverId}}\",\"firstName\":\"Jean\",\"lastName\":\"Habimana\",\"licenseNumber\":\"DL-2021-04567\",\"phone\":\"0788110001\"}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/drivers/save"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Driver save returns 201', function () { pm.response.to.have.status(201); pm.expect(pm.response.text()).to.eql('Driver saved successfully'); });"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/drivers/{{driverId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Driver can be found by ID', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().licenseNumber).to.eql('DL-2021-04567'); });"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/fuel-types/{{petrolId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Fuel type can be found by ID', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().name).to.eql('Petrol'); });"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/pumps/{{pump4Id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Pump can be found by ID', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().pumpNumber).to.eql(4); });"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/pump-attendants/{{attendant1Id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Pump attendant can be found by ID', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().firstName).to.eql('Aline'); });"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/fuel-issues/{{requestedIssueId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Fuel issue can be found by ID', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('requestedIssueId')); });"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2 - PUT cannot change status",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"issueDate\":\"2026-10-25\",\"status\":\"DISPENSED\",\"plateNumber\":\"RAA 400D updated\",\"litres\":26,\"driver\":{\"id\":\"{{driverId}}\"},\"attendant\":{\"id\":\"{{attendant3Id}}\"}}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/fuel-issues/{{approvedIssueId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('General update succeeds without changing status', function () { pm.response.to.have.status(200); pm.expect(pm.response.text()).to.eql('Fuel issue updated successfully'); });"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2 - Verify status is unchanged",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/fuel-issues/{{approvedIssueId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status remains APPROVED after general update', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().status).to.eql('APPROVED'); });"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A2",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/drivers/{{driverId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Driver can be found by ID', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().licenseNumber).to.eql('DL-2021-04567'); });"]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "B1",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/drivers/by-last-name?lastName=habimana"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Case-insensitive last name returns both drivers', function () { const drivers = pm.response.json(); pm.response.to.have.status(200); pm.expect(drivers.length).to.be.at.least(2); pm.expect(drivers[0].firstName <= drivers[1].firstName).to.eql(true); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "B2",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/fuel-issues/by-status?status=REQUESTED"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Issues are filtered and ordered by status', function () { const issues = pm.response.json(); pm.response.to.have.status(200); pm.expect(issues.length).to.be.above(0); pm.expect(issues.every((issue) => issue.status === 'REQUESTED')).to.eql(true); pm.expect(issues[0].issueDate <= issues[issues.length - 1].issueDate).to.eql(true); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "B3",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/fuel-issues/between?start=2026-10-01&end=2026-10-31"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Inclusive October date range returns October issues', function () { const issues = pm.response.json(); pm.response.to.have.status(200); pm.expect(issues.length).to.be.above(0); pm.expect(issues.every((issue) => issue.issueDate >= '2026-10-01' && issue.issueDate <= '2026-10-31')).to.eql(true); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C1",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/pump-attendants/by-fuel-type?name=diesel"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Diesel attendants are returned without case matching', function () { const attendants = pm.response.json(); pm.response.to.have.status(200); pm.expect(attendants.length).to.be.above(0); pm.expect(attendants.some((attendant) => attendant.firstName === 'Eric')).to.eql(true); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C2",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/pumps/free"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Pump 4 is free', function () { const pumps = pm.response.json(); pm.response.to.have.status(200); pm.expect(pumps.some((pump) => pump.pumpNumber === 4)).to.eql(true); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C3",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/fuel-types/unused"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('LPG is unused', function () { const types = pm.response.json(); pm.response.to.have.status(200); pm.expect(types.some((type) => type.name === 'LPG')).to.eql(true); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C4",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/drivers/of-pump-attendant/{{attendant1Id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Attendant drivers are listed once', function () { const drivers = pm.response.json(); pm.response.to.have.status(200); const driverIds = drivers.map((driver) => driver.id); pm.expect(new Set(driverIds).size).to.eql(driverIds.length); pm.expect(driverIds.length).to.be.above(0); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C4 - 404",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/drivers/of-pump-attendant/00000000-0000-0000-0000-000000000000"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Missing attendant returns the required 404', function () { pm.response.to.have.status(404); pm.expect(pm.response.text()).to.eql('The pump attendant with that id does not exist'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D1",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"issueDate\":\"{{testDate}}\",\"status\":\"DISPENSED\",\"plateNumber\":\"POSTMAN-100\",\"litres\":15,\"driver\":{\"id\":\"{{driverId}}\"},\"attendant\":{\"id\":\"{{attendant1Id}}\"}}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": "{{baseUrl}}/api/fuel-issues/save"
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["const testDate = new Date(); testDate.setDate(testDate.getDate() + 1 + Math.floor(Math.random() * 365)); pm.collectionVariables.set('testDate', testDate.toISOString().slice(0, 10));"]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('New issue starts as requested', function () { pm.response.to.have.status(201); pm.expect(pm.response.text()).to.eql('Fuel issue saved successfully'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D1 - 400 past date",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"issueDate\":\"2026-10-20\",\"status\":\"APPROVED\",\"plateNumber\":\"PAST-100\",\"litres\":10,\"driver\":{\"id\":\"{{driverId}}\"},\"attendant\":{\"id\":\"{{attendant2Id}}\"}}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": "{{baseUrl}}/api/fuel-issues/save"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Past issue returns the required 400', function () { pm.response.to.have.status(400); pm.expect(pm.response.text()).to.eql('Fuel issue date cannot be in the past'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D1 - Verify initial status",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/fuel-issues/all"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('New issue starts as REQUESTED even if body said DISPENSED', function () { const issues = pm.response.json(); const savedIssue = issues.find((issue) => issue.plateNumber === 'POSTMAN-100'); pm.response.to.have.status(200); pm.expect(savedIssue).to.exist; pm.expect(savedIssue.status).to.eql('REQUESTED'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D1 - 409 attendant date conflict",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"issueDate\":\"{{testDate}}\",\"status\":\"REQUESTED\",\"plateNumber\":\"POSTMAN-200\",\"litres\":12,\"driver\":{\"id\":\"{{driverId}}\"},\"attendant\":{\"id\":\"{{attendant1Id}}\"}}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": "{{baseUrl}}/api/fuel-issues/save"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Second issue for attendant and date returns 409', function () { pm.response.to.have.status(409); pm.expect(pm.response.text()).to.eql('Attendant already has a fuel issue on that date'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D2",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/fuel-issues/{{requestedIssueId}}/status?status=APPROVED"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Requested issue can be approved', function () { pm.response.to.have.status(200); pm.expect(pm.response.text()).to.eql('Fuel issue status updated successfully'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D2 - 400 final status",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/fuel-issues/{{dispensedIssueId}}/status?status=REQUESTED"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Final status cannot move backwards', function () { pm.response.to.have.status(400); pm.expect(pm.response.text()).to.eql('Cannot change status from DISPENSED to REQUESTED'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D2 - 404",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/fuel-issues/00000000-0000-0000-0000-000000000000/status?status=APPROVED"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Missing issue returns the required 404', function () { pm.response.to.have.status(404); pm.expect(pm.response.text()).to.eql('The fuel issue with that id does not exist'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D3",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/api/pump-attendants/{{attendant2Id}}/fuel-types/{{keroseneId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Fuel type is added to attendant', function () { pm.response.to.have.status(200); pm.expect(pm.response.text()).to.eql('Fuel type added to the pump attendant'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D3 - 409 duplicate fuel type",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/api/pump-attendants/{{attendant2Id}}/fuel-types/{{keroseneId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Duplicate fuel type returns 409', function () { pm.response.to.have.status(409); pm.expect(pm.response.text()).to.eql('The pump attendant already has that fuel type'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D3 - 404 missing attendant",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/api/pump-attendants/00000000-0000-0000-0000-000000000000/fuel-types/{{keroseneId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Missing attendant returns the required 404', function () { pm.response.to.have.status(404); pm.expect(pm.response.text()).to.eql('The pump attendant with that id does not exist'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D3 - 404 missing fuel type",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/api/pump-attendants/{{attendant2Id}}/fuel-types/00000000-0000-0000-0000-000000000000"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Missing fuel type returns the required 404', function () { pm.response.to.have.status(404); pm.expect(pm.response.text()).to.eql('That fuel type does not exist'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D4",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/pump-attendants/{{attendant2Id}}/pump?pumpNumber=4"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Attendant can be moved to free pump', function () { pm.response.to.have.status(200); pm.expect(pm.response.text()).to.eql('Pump changed successfully'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D4 - 409 occupied pump",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/pump-attendants/{{attendant3Id}}/pump?pumpNumber=1"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Occupied pump returns 409', function () { pm.response.to.have.status(409); pm.expect(pm.response.text()).to.eql('That pump is taken by another pump attendant'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "D4 - 404 missing pump",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/pump-attendants/{{attendant2Id}}/pump?pumpNumber=99"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Missing pump returns the required 404', function () { pm.response.to.have.status(404); pm.expect(pm.response.text()).to.eql('The pump with that pumpNumber does not exist'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "E1",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"paymentMethod\":\"Fleet card\",\"remarks\":\"Full tank\",\"amountPaid\":45000}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": "{{baseUrl}}/api/fuel-receipts/save?fuelIssueId={{dispensedIssueId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Receipt is saved for a dispensed issue', function () { pm.response.to.have.status(201); pm.expect(pm.response.text()).to.eql('Fuel receipt saved successfully'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "E1 - 400 not dispensed",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"paymentMethod\":\"Cash\",\"remarks\":\"Must be refused\",\"amountPaid\":1000}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": "{{baseUrl}}/api/fuel-receipts/save?fuelIssueId={{requestedIssueId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Receipt for non-dispensed issue returns 400', function () { pm.response.to.have.status(400); pm.expect(pm.response.text()).to.eql('Fuel receipts are only for DISPENSED fuel issues'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "E1 - 404",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"paymentMethod\":\"Cash\",\"remarks\":\"Missing issue\",\"amountPaid\":1000}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": "{{baseUrl}}/api/fuel-receipts/save?fuelIssueId=00000000-0000-0000-0000-000000000000"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Missing issue returns the required 404', function () { pm.response.to.have.status(404); pm.expect(pm.response.text()).to.eql('The fuel issue with that id does not exist'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "E2",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/fuel-receipts/driver/{{driverLicense}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Driver receipt history is returned newest first', function () { const receipts = pm.response.json(); pm.response.to.have.status(200); pm.expect(receipts.length).to.be.above(0); pm.expect(receipts[0].receiptDate >= receipts[receipts.length - 1].receiptDate).to.eql(true); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "E3",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/fuel-receipts/delete/{{receiptId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Receipt can be deleted', function () { pm.response.to.have.status(200); pm.expect(pm.response.text()).to.eql('Fuel receipt deleted successfully'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "E3 - 404 receipt",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/fuel-receipts/delete/00000000-0000-0000-0000-000000000000"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Missing receipt returns the required 404', function () { pm.response.to.have.status(404); pm.expect(pm.response.text()).to.eql('The fuel receipt with that id does not exist'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "E3 - 409 protected issue",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/fuel-issues/delete/{{protectedIssueId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Issue with receipts cannot be deleted', function () { pm.response.to.have.status(409); pm.expect(pm.response.text()).to.eql('That fuel issue has fuel receipts, delete them first'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "F1",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/fuel-issues/stats/by-status"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Status report returns status and count rows', function () { const rows = pm.response.json(); pm.response.to.have.status(200); pm.expect(rows.length).to.be.at.least(4); pm.expect(rows[0]).to.have.length(2); pm.expect(Number(rows[0][1])).to.be.above(0); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "F2",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/fuel-issues/cancel-day?pumpAttendantId={{attendant1Id}}&date=2026-10-20"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Bulk update reports the two matching issues', function () { pm.response.to.have.status(200); pm.expect(pm.response.text()).to.eql('2 fuel issues cancelled'); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bonus",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/dashboard/summary"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('Dashboard includes all summary counts', function () { const summary = pm.response.json(); pm.response.to.have.status(200); pm.expect(summary).to.have.all.keys('drivers', 'attendants', 'freePumps', 'issuesToday', 'requested', 'receipts'); pm.expect(summary.drivers).to.be.at.least(5); });"]
+          }
+        }
+      ]
+    }
+  ]
+}
